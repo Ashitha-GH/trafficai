@@ -1,0 +1,212 @@
+type VehicleType = 
+ variant {
+   Ambulance;
+   FireTruck;
+   GeneralVehicle;
+   Police;
+   VIP;
+ };
+type VehicleStatus = 
+ variant {
+   available;
+   dispatched;
+   enRoute;
+   offline;
+ };
+type VehiclePublic = 
+ record {
+   currentIncidentId: opt nat;
+   id: VehicleId;
+   location: Location;
+   status: VehicleStatus;
+   vehicleType: VehicleType;
+ };
+type VehicleId = nat;
+type UserRole = 
+ variant {
+   ControlPanelAdmin;
+   EmergencyResponder;
+   GeneralUser;
+   TrafficPolice;
+ };
+type UserProfilePublic = 
+ record {
+   email: text;
+   "principal": UserId;
+   registrationStatus: RegistrationStatus;
+   role: UserRole;
+ };
+type UserId = principal;
+type TrafficStats = 
+ record {
+   avgCongestion: float64;
+   openIncidents: nat;
+   topAnomalies: vec text;
+   totalVehicles: nat;
+ };
+type TrafficSegmentPublic = 
+ record {
+   averageSpeedKmh: float64;
+   congestionLevel: CongestionLevel;
+   endLat: float64;
+   endLng: float64;
+   id: SegmentId;
+   startLat: float64;
+   startLng: float64;
+   vehicleCount: nat;
+ };
+type Timestamp = int;
+type SignalConfigPublic = 
+ record {
+   greenDurationSecs: nat;
+   junctionId: text;
+   redDurationSecs: nat;
+   yellowDurationSecs: nat;
+ };
+type SegmentId = nat;
+type RouteResult = 
+ record {
+   congestionWarnings: vec text;
+   estimatedTimeMinutes: float64;
+   segments: vec Location;
+ };
+type RouteRequest = 
+ record {
+   destLat: float64;
+   destLng: float64;
+   originLat: float64;
+   originLng: float64;
+   priority: RoutePriority;
+   requesterId: principal;
+   vehicleId: nat;
+ };
+type RoutePriority = 
+ variant {
+   emergency;
+   normal;
+ };
+type RegistrationStatus = 
+ variant {
+   approved;
+   pending;
+   rejected;
+ };
+type Location = 
+ record {
+   lat: float64;
+   lng: float64;
+ };
+type IncidentStatus = 
+ variant {
+   assigned;
+   open;
+   resolved;
+ };
+type IncidentSeverity = 
+ variant {
+   critical;
+   high;
+   low;
+   medium;
+ };
+type IncidentPublic = 
+ record {
+   assignedVehicleIds: vec nat;
+   createdAt: Timestamp;
+   id: IncidentId;
+   incidentType: text;
+   location: Location;
+   severity: IncidentSeverity;
+   status: IncidentStatus;
+   updatedAt: Timestamp;
+ };
+type IncidentId = nat;
+type EmergencyStatus = 
+ variant {
+   approved;
+   pending;
+   rejected;
+ };
+type EmergencyRequestPublic = 
+ record {
+   createdAt: Timestamp;
+   destination: text;
+   destinationLat: float64;
+   destinationLng: float64;
+   requestId: nat;
+   requesterId: principal;
+   routePoints: vec Location;
+   status: EmergencyStatus;
+   statusText: text;
+   vehicleId: text;
+   vehicleType: VehicleType;
+ };
+type CongestionLevel = 
+ variant {
+   blocked;
+   free;
+   heavy;
+   moderate;
+ };
+type ChatRole = 
+ variant {
+   assistant;
+   user;
+ };
+type ChatMessageId = nat;
+type ChatMessage = 
+ record {
+   content: text;
+   id: ChatMessageId;
+   role: ChatRole;
+   timestamp: Timestamp;
+ };
+type ChatContext = 
+ record {
+   activeIncidentCount: nat;
+   avgCongestion: float64;
+   dashboardRole: text;
+   recentAnomalies: vec text;
+   totalVehicles: nat;
+ };
+type AnomalyPublic = 
+ record {
+   anomalyType: text;
+   description: text;
+   detectedAt: Timestamp;
+   id: AnomalyId;
+   location: Location;
+   severity: text;
+ };
+type AnomalyId = nat;
+service : {
+  addVehicle: (vehicleType: VehicleType, location: Location) ->
+   (VehiclePublic);
+  approveEmergencyRequest: (requestId: nat) -> (bool);
+  createIncident: (location: Location, severity: IncidentSeverity,
+   incidentType: text) -> (IncidentPublic);
+  detectAnomalies: () -> (vec AnomalyPublic);
+  getAnomalies: () -> (vec AnomalyPublic) query;
+  getChatHistory: () -> (vec ChatMessage) query;
+  getEmergencyRequests: () -> (vec EmergencyRequestPublic) query;
+  getIncidents: () -> (vec IncidentPublic) query;
+  getSignalConfigs: () -> (vec SignalConfigPublic) query;
+  getTrafficSegments: () -> (vec TrafficSegmentPublic) query;
+  getTrafficStats: () -> (TrafficStats) query;
+  getUserProfile: () -> (opt UserProfilePublic) query;
+  getVehicles: () -> (vec VehiclePublic) query;
+  registerUser: (email: text, role: UserRole) -> (UserProfilePublic);
+  rejectEmergencyRequest: (requestId: nat) -> (bool);
+  requestRoute: (request: RouteRequest) -> (RouteResult);
+  resolveIncident: (id: nat) -> (bool);
+  sendChatMessage: (content: text, ctx: ChatContext) -> (ChatMessage);
+  submitEmergencyRequest: (vehicleId: text, vehicleType: VehicleType,
+   destination: text, destinationLat: float64, destinationLng: float64) ->
+   (nat);
+  updateIncident: (id: nat, severity: opt IncidentSeverity, status:
+   opt IncidentStatus, assignedVehicleIds: opt vec nat) -> (bool);
+  updateSignalConfig: (config: SignalConfigPublic) -> (bool);
+  updateUserRole: (target: principal, newRole: UserRole) -> (bool);
+  updateVehicleStatus: (id: nat, status: VehicleStatus, incidentId:
+   opt nat) -> (bool);
+}

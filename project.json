@@ -1,0 +1,27 @@
+{
+  "overview": "An AI-based traffic management system with four role-based dashboards (Emergencies, Control Panel, Traffic Police, User), featuring simulated live maps with geolocation, AI traffic prediction chatboards, incident management, vehicle dispatch, and dynamic routing — all in near real-time.",
+  "features": [
+    "4 role-based dashboards: Emergencies, Control Panel, Traffic Police, User",
+    "Simulated live traffic map with browser geolocation",
+    "AI-powered traffic prediction chatboard",
+    "Emergency vehicle dispatch and routing",
+    "Control Panel: vehicle management and incident override",
+    "Traffic Police: signal control and incident management",
+    "User: route planning with congestion warnings",
+    "Role-based registration with ID proof file upload",
+    "Near real-time polling updates (3–5 seconds)",
+    "Edge-case and anomaly detection engine"
+  ],
+  "category": "productivity",
+  "tags": [
+    "traffic",
+    "ai",
+    "simulation",
+    "routing",
+    "emergency",
+    "dashboard",
+    "geolocation",
+    "real-time"
+  ],
+  "last_updated": "2026-04-10T18:56:01.371Z"
+}

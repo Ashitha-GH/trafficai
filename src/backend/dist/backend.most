@@ -1,0 +1,181 @@
+// Version: 1.0.0
+type AnomalyId__292847104 = Nat;
+type AnomalyId__67662213 = AnomalyId__292847104;
+type Anomaly__425410773 = Anomaly__464130766;
+type Anomaly__464130766 =
+  {
+    anomalyType : Text;
+    description : Text;
+    detectedAt : Timestamp__157716167;
+    id : AnomalyId__67662213;
+    location : Location__392133807;
+    var severity : Text
+  };
+type ChatMessageId__1046077332 = Nat;
+type ChatMessageId__345077661 = ChatMessageId__1046077332;
+type ChatMessage__559859432 =
+  {
+    content : Text;
+    id : ChatMessageId__345077661;
+    role : ChatRole__449952742;
+    timestamp : Timestamp__753029554
+  };
+type ChatMessage__665074443 = ChatMessage__559859432;
+type ChatRole__449952742 = {#assistant; #user};
+type CongestionLevel__609778703 = {#blocked; #free; #heavy; #moderate};
+type Data__791452850<K, V> =
+  {var count : Nat__490723111; kvs : [var ?(K, V)]};
+type EmergencyRequest__798700825 =
+  {
+    createdAt : Timestamp__382861547;
+    destination : Text;
+    destinationLat : Float;
+    destinationLng : Float;
+    requestId : Nat;
+    requesterId : Principal;
+    var routePoints : [Location__376985646];
+    var status : EmergencyStatus__206505552;
+    vehicleId : Text;
+    var vehicleType : VehicleType__10768309
+  };
+type EmergencyRequest__829074947 = EmergencyRequest__798700825;
+type EmergencyStatus__206505552 = {#approved; #pending; #rejected};
+type IncidentId__1049202101 = IncidentId__610298952;
+type IncidentId__610298952 = Nat;
+type IncidentSeverity__527213320 = {#critical; #high; #low; #medium};
+type IncidentStatus__708622128 = {#assigned; #open; #resolved};
+type Incident__14973281 =
+  {
+    var assignedVehicleIds : [Nat];
+    createdAt : Timestamp__235284222;
+    id : IncidentId__1049202101;
+    incidentType : Text;
+    location : Location__23200101;
+    var severity : IncidentSeverity__527213320;
+    var status : IncidentStatus__708622128;
+    var updatedAt : Timestamp__235284222
+  };
+type Incident__67648627 = Incident__14973281;
+type Internal__8484328<K, V> =
+  {children : [var ?Node__46230540<K, V>]; data : Data__791452850<K, V>};
+type Leaf__809889148<K, V> = {data : Data__791452850<K, V>};
+type List__415060402<T> = List__790383201<T>;
+type List__790383201<T> =
+  {
+    var blockIndex : Nat__490723111;
+    var blocks : [var [var ?T]];
+    var elementIndex : Nat__490723111
+  };
+type Location__23200101 = Location__847735819;
+type Location__376985646 = Location__847735819;
+type Location__392133807 = Location__847735819;
+type Location__759716330 = Location__847735819;
+type Location__847735819 = {lat : Float; lng : Float};
+type Nat__490723111 = Nat__920180692;
+type Nat__920180692 = Nat;
+type Node__46230540<K, V> =
+  {#internal : Internal__8484328<K, V>; #leaf : Leaf__809889148<K, V>};
+type RegistrationStatus__706687200 = {#approved; #pending; #rejected};
+type SegmentId__431749045 = Nat;
+type SegmentId__607845083 = SegmentId__431749045;
+type SignalConfig__378904049 = SignalConfig__913476543;
+type SignalConfig__913476543 =
+  {
+    var greenDurationSecs : Nat;
+    junctionId : Text;
+    var redDurationSecs : Nat;
+    var yellowDurationSecs : Nat
+  };
+type Timestamp__157716167 = Timestamp__301639476;
+type Timestamp__235284222 = Timestamp__301639476;
+type Timestamp__301639476 = Int;
+type Timestamp__382861547 = Timestamp__301639476;
+type Timestamp__753029554 = Timestamp__301639476;
+type TrafficSegment__447192521 =
+  {
+    var averageSpeedKmh : Float;
+    var congestionLevel : CongestionLevel__609778703;
+    var endLat : Float;
+    var endLng : Float;
+    id : SegmentId__607845083;
+    var startLat : Float;
+    var startLng : Float;
+    var vehicleCount : Nat
+  };
+type TrafficSegment__510397354 = TrafficSegment__447192521;
+type UserId__1043627770 = UserId__158757552;
+type UserId__158757552 = Principal;
+type UserProfile__104081004 = UserProfile__277265826;
+type UserProfile__277265826 =
+  {
+    var email : Text;
+    principal : UserId__1043627770;
+    var registrationStatus : RegistrationStatus__706687200;
+    var role : UserRole__41952412
+  };
+type UserRole__41952412 =
+  {#ControlPanelAdmin; #EmergencyResponder; #GeneralUser; #TrafficPolice};
+type VehicleId__836043066 = VehicleId__963797663;
+type VehicleId__963797663 = Nat;
+type VehicleStatus__513188532 = {#available; #dispatched; #enRoute; #offline};
+type VehicleType__10768309 = VehicleType__173044994;
+type VehicleType__173044994 =
+  {#Ambulance; #FireTruck; #GeneralVehicle; #Police; #VIP};
+type Vehicle__467694960 = Vehicle__553412953;
+type Vehicle__553412953 =
+  {
+    var currentIncidentId : ?Nat;
+    id : VehicleId__836043066;
+    var location : Location__759716330;
+    var status : VehicleStatus__513188532;
+    var vehicleType : VehicleType__173044994
+  };
+actor {
+  stable anomalies :
+    {
+      var root : Node__46230540<Nat, Anomaly__425410773>;
+      var size : Nat__490723111
+    };
+  stable anomalyCounter : {var value : Nat};
+  stable chatCounter : {var value : Nat};
+  stable chatMessages :
+    {
+      var root :
+        Node__46230540<Principal, List__415060402<ChatMessage__665074443>>;
+      var size : Nat__490723111
+    };
+  stable emergencyCounter : {var value : Nat};
+  stable emergencyRequests :
+    {
+      var root : Node__46230540<Nat, EmergencyRequest__829074947>;
+      var size : Nat__490723111
+    };
+  stable incidentCounter : {var value : Nat};
+  stable incidents :
+    {
+      var root : Node__46230540<Nat, Incident__67648627>;
+      var size : Nat__490723111
+    };
+  stable segmentCounter : {var value : Nat};
+  stable segments :
+    {
+      var root : Node__46230540<Nat, TrafficSegment__510397354>;
+      var size : Nat__490723111
+    };
+  stable signals :
+    {
+      var root : Node__46230540<Text, SignalConfig__378904049>;
+      var size : Nat__490723111
+    };
+  stable users :
+    {
+      var root : Node__46230540<Principal, UserProfile__104081004>;
+      var size : Nat__490723111
+    };
+  stable vehicleCounter : {var value : Nat};
+  stable vehicles :
+    {
+      var root : Node__46230540<Nat, Vehicle__467694960>;
+      var size : Nat__490723111
+    }
+};
